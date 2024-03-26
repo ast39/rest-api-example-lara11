@@ -1,0 +1,131 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Rest Api - Laravel 11",
+        "description": "Example of Rest Api by Laravel 11 platform",
+        "contact": {
+            "name": "ASt",
+            "email": "alexandr.statut@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "127.0.0.1:8000",
+            "description": "Dev API server"
+        },
+        {
+            "url": "127.0.0.1:8001",
+            "description": "Prod API server"
+        }
+    ],
+    "paths": {
+        "/v1/category/show/{id}": {
+            "get": {
+                "tags": [
+                    "Категории"
+                ],
+                "summary": "API: Просмотр отдельной категории",
+                "description": "Просмотр отдельной категории",
+                "operationId": "v1.category.show",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID категории",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CategoryResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "500": {
+                        "description": "server not available"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CategoryResource": {
+                "title": "Карточка категории",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "Transform the resource into an array.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "title": {
+                        "title": "Заголовок",
+                        "type": "string",
+                        "example": "Test"
+                    },
+                    "created_at": {
+                        "title": "Создана",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01 12:00:00"
+                    },
+                    "updated_at": {
+                        "title": "Обновлена",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01 12:00:00"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "apiAuth": {
+                "type": "http",
+                "description": "Your token providing after auth in Api",
+                "name": "Api Client",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Категории",
+            "description": "Блок категорий"
+        }
+    ],
+    "externalDocs": {
+        "description": "Api Docs",
+        "url": "https://127.0.0.1:8000/api/docs"
+    }
+}
