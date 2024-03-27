@@ -141,8 +141,7 @@ class UserController extends Controller {
     {
         if (!$this->anyOfMany(
             Gate::allows('is-admin'),
-            Gate::allows('is-moderator'),
-            Gate::allows('is-user')
+            Gate::allows('is-moderator')
         )) {
             throw new NotAuthorizedException();
         }
