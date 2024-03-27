@@ -7,7 +7,18 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
 
-class CategoryFilterRequest extends FormRequest {
+class CategoryQueryRequest extends FormRequest {
+
+    public function prepareForValidation()
+    {
+        if (is_null($this->order)) {
+            $this->merge(['order' => 'title']);
+        }
+
+        if (is_null($this->reverse)) {
+            $this->merge(['reverse' => false]);
+        }
+    }
 
     /**
      * Determine if the user is authorized to make this request.
@@ -32,6 +43,8 @@ class CategoryFilterRequest extends FormRequest {
             'status' => ['sometimes', new Enum(ESoftStatus::class)],
             'page' => ['sometimes', 'integer', 'min:1'],
             'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
+            'order' => ['sometimes', 'string', 'min:1', 'max:100'],
+            'reverse' => ['sometimes', 'boolean'],
         ];
     }
 }

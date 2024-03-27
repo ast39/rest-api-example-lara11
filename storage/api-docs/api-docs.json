@@ -20,12 +20,322 @@
         }
     ],
     "paths": {
-        "/v1/category/show/{id}": {
+        "/v1/category": {
             "get": {
                 "tags": [
                     "Категории"
                 ],
-                "summary": "API: Просмотр отдельной категории",
+                "summary": "Api: Список категорий",
+                "description": "Список категорий",
+                "operationId": "v1.category.getList",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Поиск по совпадению",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Test"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Статус",
+                        "required": false,
+                        "allowEmptyValue": true,
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                1,
+                                2
+                            ],
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Номер страницы",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Записей на страницу",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "example": "10"
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Соротировка по полю",
+                        "required": false,
+                        "allowEmptyValue": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "title",
+                                "status",
+                                "created"
+                            ],
+                            "default": "title"
+                        }
+                    },
+                    {
+                        "name": "reverse",
+                        "in": "query",
+                        "description": "Реверс сортировки",
+                        "required": false,
+                        "allowEmptyValue": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "title": "Список категорий",
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CategoryResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Категории"
+                ],
+                "summary": "Api: Добавить категорию",
+                "description": "Добавить категорию",
+                "operationId": "v1.category.store",
+                "requestBody": {
+                    "description": "Данные новой категории",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "title": "Заголовок",
+                                        "type": "string",
+                                        "example": "Test",
+                                        "nullable": "false"
+                                    },
+                                    "status": {
+                                        "title": "Статус",
+                                        "type": "integer",
+                                        "example": "1",
+                                        "nullable": "true"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "examples": {
+                                "Active category": {
+                                    "summary": "Active category",
+                                    "value": {
+                                        "title": "Test 1",
+                                        "status": 1
+                                    }
+                                },
+                                "Blocked category": {
+                                    "summary": "Blocked category",
+                                    "value": {
+                                        "title": "Test 2",
+                                        "status": 2
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CategoryResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            }
+        },
+        "/v1/category/{id}": {
+            "get": {
+                "tags": [
+                    "Категории"
+                ],
+                "summary": "Api: Просмотр отдельной категории",
                 "description": "Просмотр отдельной категории",
                 "operationId": "v1.category.show",
                 "parameters": [
@@ -52,23 +362,315 @@
                                         }
                                     },
                                     "type": "object"
+                                },
+                                "examples": {
+                                    "Some category": {
+                                        "summary": "Some category",
+                                        "value": {
+                                            "id": 1,
+                                            "title": "Test",
+                                            "status": 1,
+                                            "created": "2024-03-01 11:00:00",
+                                            "updated": "2024-03-01 11:00:00"
+                                        }
+                                    }
                                 }
                             }
                         }
                     },
                     "400": {
-                        "description": "Bad Request"
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "500": {
-                        "description": "server not available"
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
                     {
                         "apiAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Категории"
+                ],
+                "summary": "Api: Обновить категорию",
+                "description": "Обновить категорию",
+                "operationId": "v1.category.update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID категории",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Обновленные данные категории",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "title": "Заголовок",
+                                        "type": "string",
+                                        "example": "Test",
+                                        "nullable": "true"
+                                    },
+                                    "status": {
+                                        "title": "Статус",
+                                        "type": "integer",
+                                        "example": "1",
+                                        "nullable": "true"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CategoryResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Категории"
+                ],
+                "summary": "Api: Удаление категории",
+                "description": "Удаление категории",
+                "operationId": "v1.category.destroy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID категории",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/MessageResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
                     }
                 ]
             }
@@ -91,17 +693,62 @@
                         "type": "string",
                         "example": "Test"
                     },
-                    "created_at": {
+                    "status": {
+                        "title": "Статус",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "created": {
                         "title": "Создана",
                         "type": "string",
                         "format": "date-time",
                         "example": "2023-12-01 12:00:00"
                     },
-                    "updated_at": {
+                    "updated": {
                         "title": "Обновлена",
                         "type": "string",
                         "format": "date-time",
                         "example": "2023-12-01 12:00:00"
+                    }
+                },
+                "type": "object"
+            },
+            "ErrorResource": {
+                "title": "Ответ с ошибкой",
+                "properties": {
+                    "status": {
+                        "title": "Статус",
+                        "type": "boolean",
+                        "format": "int64",
+                        "example": "false"
+                    },
+                    "code": {
+                        "title": "Код",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "500"
+                    },
+                    "msg": {
+                        "title": "Сообщение",
+                        "type": "string",
+                        "example": "Test"
+                    }
+                },
+                "type": "object"
+            },
+            "MessageResource": {
+                "title": "Простой ответ",
+                "properties": {
+                    "status": {
+                        "title": "Статус",
+                        "description": "Transform the resource into an array.",
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "msg": {
+                        "title": "Сообщение",
+                        "type": "string",
+                        "example": "Test"
                     }
                 },
                 "type": "object"
