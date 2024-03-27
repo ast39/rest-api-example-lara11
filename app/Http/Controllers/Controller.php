@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use OpenApi\Annotations as OA;
 
 # php artisan l5-swagger:generate
@@ -57,5 +58,5 @@ use OpenApi\Annotations as OA;
  */
 abstract class Controller {
 
-    //
+    use AuthorizesRequests;
 }

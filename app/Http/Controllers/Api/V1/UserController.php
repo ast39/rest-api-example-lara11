@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Dto\ServerErrorDto;
+use App\Exceptions\NotAuthorizedException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\User\UserQueryRequest;
 use App\Http\Requests\Api\User\UserStoreRequest;
@@ -11,12 +12,18 @@ use App\Http\Resources\Api\UserResource;
 use App\Http\Resources\Api\ErrorResource;
 use App\Http\Resources\Api\MessageResource;
 use App\Http\Services\UserService;
+use App\Http\Traits\Accessable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use OpenApi\Annotations as OA;
 
+
 class UserController extends Controller {
+
+    use Accessable;
+
 
     /**
      * @var UserService
@@ -68,6 +75,13 @@ class UserController extends Controller {
     public function index(UserQueryRequest $request): JsonResponse
     {
         try {
+            if (!$this->anyOfMany(
+                Gate::allows('is-admin'),
+                Gate::allows('is-moderator')
+            )) {
+                throw new NotAuthorizedException();
+            }
+
             $data = $request->validated();
 
             DB::beginTransaction();
@@ -125,6 +139,14 @@ class UserController extends Controller {
      */
     public function show(int $id): JsonResponse
     {
+        if (!$this->anyOfMany(
+            Gate::allows('is-admin'),
+            Gate::allows('is-moderator'),
+            Gate::allows('is-user')
+        )) {
+            throw new NotAuthorizedException();
+        }
+
         try {
             DB::beginTransaction();
 
@@ -192,6 +214,12 @@ class UserController extends Controller {
      */
     public function store(UserStoreRequest $request): JsonResponse
     {
+        if (!$this->anyOfMany(
+            Gate::allows('is-admin')
+        )) {
+            throw new NotAuthorizedException();
+        }
+
         try {
             $data = $request->validated();
 
@@ -254,6 +282,12 @@ class UserController extends Controller {
      */
     public function update(UserUpdateRequest $request, int $id): JsonResponse
     {
+        if (!$this->anyOfMany(
+            Gate::allows('is-admin')
+        )) {
+            throw new NotAuthorizedException();
+        }
+
         try {
             $data = $request->validated();
 
@@ -305,6 +339,12 @@ class UserController extends Controller {
      */
     public function destroy(int $id): JsonResponse
     {
+        if (!$this->anyOfMany(
+            Gate::allows('is-admin')
+        )) {
+            throw new NotAuthorizedException();
+        }
+
         try {
             DB::beginTransaction();
 

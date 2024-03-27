@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Dto\ServerErrorDto;
+use App\Enums\EUserRole;
+use App\Exceptions\CategoryNotFoundException;
+use App\Exceptions\NotAuthorizedException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Category\CategoryQueryRequest;
 use App\Http\Requests\Api\Category\CategoryStoreRequest;
@@ -11,12 +14,19 @@ use App\Http\Resources\Api\CategoryResource;
 use App\Http\Resources\Api\ErrorResource;
 use App\Http\Resources\Api\MessageResource;
 use App\Http\Services\CategoryService;
+use App\Http\Traits\Accessable;
+use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use OpenApi\Annotations as OA;
 
 class CategoryController extends Controller {
+
+    use Accessable;
+
 
     /**
      * @var CategoryService
@@ -68,6 +78,14 @@ class CategoryController extends Controller {
     public function index(CategoryQueryRequest $request): JsonResponse
     {
         try {
+            if (!$this->anyOfMany(
+                Gate::allows('is-admin'),
+                Gate::allows('is-moderator'),
+                Gate::allows('is-user')
+            )) {
+                throw new NotAuthorizedException();
+            }
+
             $data = $request->validated();
 
             DB::beginTransaction();
@@ -126,6 +144,14 @@ class CategoryController extends Controller {
     public function show(int $id): JsonResponse
     {
         try {
+            if (!$this->anyOfMany(
+                Gate::allows('is-admin'),
+                Gate::allows('is-moderator'),
+                Gate::allows('is-user')
+            )) {
+                throw new NotAuthorizedException();
+            }
+
             DB::beginTransaction();
 
             $item =  $this->categoryService->show($id);
@@ -188,6 +214,13 @@ class CategoryController extends Controller {
     public function store(CategoryStoreRequest $request): JsonResponse
     {
         try {
+            if (!$this->anyOfMany(
+                Gate::allows('is-admin'),
+                Gate::allows('is-moderator')
+            )) {
+                throw new NotAuthorizedException();
+            }
+
             $data = $request->validated();
 
             DB::beginTransaction();
@@ -248,6 +281,13 @@ class CategoryController extends Controller {
     public function update(CategoryUpdateRequest $request, int $id): JsonResponse
     {
         try {
+            if (!$this->anyOfMany(
+                Gate::allows('is-admin'),
+                Gate::allows('is-moderator')
+            )) {
+                throw new NotAuthorizedException();
+            }
+
             $data = $request->validated();
 
             DB::beginTransaction();
@@ -265,40 +305,49 @@ class CategoryController extends Controller {
     }
 
     /**
-     * Delete Category
+     * @param User $user
+     * @param int $id
+     * @return JsonResponse
      *
      * @OA\Delete(
-     *    path="/v1/category/{id}",
-     *    operationId="v1.category.destroy",
-     *    summary="Api: Удаление категории",
-     *    description="Удаление категории",
-     *    tags={"Категории"},
-     *    security={{"apiKey": {} }},
+     *   path="/v1/category/{id}",
+     *   operationId="v1.category.destroy",
+     *   summary="Api: Удаление категории",
+     *   description="Удаление категории",
+     *   tags={"Категории"},
+     *   security={{"apiKey": {} }},
      *
-     *    @OA\Parameter(name="id", description="ID категории", in="path", required=true, example="1", @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="id", description="ID категории", in="path", required=true, example="1", @OA\Schema(type="integer")),
      *
-     *    @OA\Response(response=200, description="successful operation",
-     *      @OA\JsonContent(
-     *        @OA\Property(property="data", title="Простой ответ", ref="#/components/schemas/MessageResource")
-     *      )
-     *    ),
-     *    @OA\Response(response=400, description="Bad Request",
-     *      @OA\JsonContent(@OA\Property(property="data", title="Ответ с ошибкой", ref="#/components/schemas/ErrorResource"))
-     *    ),
-     *    @OA\Response(response=401, description="Unauthenticated",
-     *      @OA\JsonContent(@OA\Property(property="data", title="Ответ с ошибкой", ref="#/components/schemas/ErrorResource"))
-     *    ),
-     *    @OA\Response(response=404, description="Not found",
-     *      @OA\JsonContent(@OA\Property(property="data", title="Ответ с ошибкой", ref="#/components/schemas/ErrorResource"))
-     *    ),
-     *    @OA\Response(response=500, description="server not available",
-     *      @OA\JsonContent(@OA\Property(property="data", title="Ответ с ошибкой", ref="#/components/schemas/ErrorResource"))
-     *    ),
-     *  )
+     *   @OA\Response(response=200, description="successful operation",
+     *     @OA\JsonContent(
+     *       @OA\Property(property="data", title="Простой ответ", ref="#/components/schemas/MessageResource")
+     *     )
+     *   ),
+     *   @OA\Response(response=400, description="Bad Request",
+     *     @OA\JsonContent(@OA\Property(property="data", title="Ответ с ошибкой", ref="#/components/schemas/ErrorResource"))
+     *   ),
+     *   @OA\Response(response=401, description="Unauthenticated",
+     *     @OA\JsonContent(@OA\Property(property="data", title="Ответ с ошибкой", ref="#/components/schemas/ErrorResource"))
+     *   ),
+     *   @OA\Response(response=404, description="Not found",
+     *     @OA\JsonContent(@OA\Property(property="data", title="Ответ с ошибкой", ref="#/components/schemas/ErrorResource"))
+     *   ),
+     *   @OA\Response(response=500, description="server not available",
+     *     @OA\JsonContent(@OA\Property(property="data", title="Ответ с ошибкой", ref="#/components/schemas/ErrorResource"))
+     *   ),
+     * )
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(User $user, int $id): JsonResponse
     {
         try {
+            if (!$this->anyOfMany(
+                Gate::allows('is-admin'),
+                Gate::allows('is-moderator')
+            )) {
+                throw new NotAuthorizedException();
+            }
+
             DB::beginTransaction();
 
             $this->categoryService->destroy($id);

@@ -15,19 +15,18 @@ class RoleSeeder extends Seeder {
     public function run(): void
     {
         Role::create([
-            'id' => EUserRole::ADMIN->value,
-            'title' => ucfirst(strtolower(EUserRole::ADMIN->name)),
+            'title' => EUserRole::ADMIN->name,
             'note'  => 'Администратор ресурса',
         ]);
 
         Role::create([
-            'title' => EUserRole::MODERATOR->value,
-            'note'  => ucfirst(strtolower(EUserRole::MODERATOR->name)),
+            'title' => EUserRole::MODERATOR->name,
+            'note'  => 'Модератор ресурса',
         ]);
 
         Role::create([
-            'title' => EUserRole::USER->value,
-            'note'  => ucfirst(strtolower(EUserRole::USER->name)),
+            'title' => EUserRole::USER->name,
+            'note'  => 'Пользователь ресурса',
         ]);
     }
 }

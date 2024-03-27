@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EUserRole;
 use App\Models\Scopes\Filter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -18,6 +19,27 @@ class User extends Authenticatable {
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'user_roles');
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array(EUserRole::ADMIN->name, array_map(function($role) {
+            return $role['title'];
+        }, $this->roles?->toArray() ?: []));
+    }
+
+    public function isModerator(): bool
+    {
+        return in_array(EUserRole::MODERATOR->name, array_map(function($role) {
+            return $role['title'];
+        }, $this->roles?->toArray() ?: []));
+    }
+
+    public function isUser(): bool
+    {
+        return in_array(EUserRole::USER->name, array_map(function($role) {
+            return $role['title'];
+        }, $this->roles?->toArray() ?: []));
     }
 
 
