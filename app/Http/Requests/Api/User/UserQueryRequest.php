@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\User;
 
+use App\Enums\EOrderReverse;
 use App\Enums\ESoftStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
@@ -12,11 +13,11 @@ class UserQueryRequest extends FormRequest {
     public function prepareForValidation()
     {
         if (is_null($this->order)) {
-            $this->merge(['order' => 'title']);
+            $this->merge(['order' => 'email']);
         }
 
         if (is_null($this->reverse)) {
-            $this->merge(['reverse' => false]);
+            $this->merge(['reverse' => EOrderReverse::ASC->value]);
         }
     }
 
@@ -44,7 +45,7 @@ class UserQueryRequest extends FormRequest {
             'page' => ['sometimes', 'integer', 'min:1'],
             'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
             'order' => ['sometimes', 'string', 'min:1', 'max:100'],
-            'reverse' => ['sometimes', 'boolean'],
+            'reverse' => ['sometimes', new Enum(EOrderReverse::class)],
         ];
     }
 }

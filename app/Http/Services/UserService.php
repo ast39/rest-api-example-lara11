@@ -2,52 +2,60 @@
 
 namespace App\Http\Services;
 
+use App\Enums\EOrderReverse;
 use App\Exceptions\UserNotFoundException;
-use App\Http\Resources\Api\UserResource;
 use App\Models\Scopes\UserScope;
 use App\Models\User;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 
 class UserService {
 
     /**
      * @param array $data
-     * @return JsonResource
+     * @param string|null $order
+     * @param string|null $reverse
+     * @return Collection|LengthAwarePaginator
      * @throws BindingResolutionException
      */
-    public function index(array $data): JsonResource
+    public function index(array $data, ?string $order = 'title', ?string $reverse = EOrderReverse::ASC->value): Collection|LengthAwarePaginator
     {
         $filter = app()->make(UserScope::class, [
             'queryParams' => array_filter($data)
         ]);
 
         $users = User::query()->filter($filter)
-            ->orderBy('title');
+            ->orderBy($order, $reverse);
 
-        $users = is_null($data['limit'] ?? null)
+        return is_null($data['limit'] ?? null)
             ? $users->get()
             : $users->paginate($data['limit']);
-
-        return UserResource::collection($users);
     }
 
     /**
      * @param string $email
-     * @return User|null
+     * @return User
+     * @throws UserNotFoundException
      */
-    public function getByEmail(string $email): ?User
+    public function getByEmail(string $email): User
     {
-        return User::where('email', $email)->first();
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            throw new UserNotFoundException();
+        }
+
+        return $user;
     }
 
     /**
      * @param int $id
-     * @return JsonResource
+     * @return User
      * @throws UserNotFoundException
      */
-    public function show(int $id): JsonResource
+    public function show(int $id): User
     {
         $user = User::find($id);
 
@@ -60,9 +68,9 @@ class UserService {
 
     /**
      * @param array $data
-     * @return JsonResource
+     * @return User
      */
-    public function store(array $data): JsonResource
+    public function store(array $data): User
     {
         $data['password'] = bcrypt($data['password']);
 
@@ -72,10 +80,10 @@ class UserService {
     /**
      * @param int $id
      * @param array $data
-     * @return JsonResource
+     * @return User
      * @throws UserNotFoundException
      */
-    public function update(int $id, array $data): JsonResource
+    public function update(int $id, array $data): User
     {
         $user = User::findOrFail($id);
 
@@ -90,10 +98,10 @@ class UserService {
 
     /**
      * @param int $id
-     * @return JsonResource
+     * @return void
      * @throws UserNotFoundException
      */
-    public function destroy(int $id): JsonResource
+    public function destroy(int $id): void
     {
         $user = User::find($id);
 
@@ -102,7 +110,5 @@ class UserService {
         }
 
         $user->delete();
-
-        return $user;
     }
 }

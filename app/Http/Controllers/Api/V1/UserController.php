@@ -72,7 +72,7 @@ class UserController extends Controller {
 
             DB::beginTransaction();
 
-            $list = $this->userService->index($data);
+            $list = $this->userService->index($data, $data['order'], $data['reverse']);
 
             DB::commit();
 
