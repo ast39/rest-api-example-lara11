@@ -43,8 +43,16 @@ use OpenApi\Annotations as OA;
  * )
  *
  * @OA\Tag(
- *    name="Категории",
- *    description="Блок категорий"
+ *   name="Авторизация",
+ *   description="Блок авторизации"
+ * ),
+ * @OA\Tag(
+ *   name="Пользователи",
+ *   description="Блок пользователей"
+ * ),
+ * @OA\Tag(
+ *   name="Категории",
+ *   description="Блок категорий"
  * ),
  */
 abstract class Controller {

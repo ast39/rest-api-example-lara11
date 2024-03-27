@@ -11,15 +11,321 @@
     },
     "servers": [
         {
-            "url": "127.0.0.1:8000",
+            "url": "http://127.0.0.1:8000/api",
             "description": "Dev API server"
         },
         {
-            "url": "127.0.0.1:8001",
+            "url": "http://127.0.0.1:8001/api",
             "description": "Prod API server"
         }
     ],
     "paths": {
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Авторизация"
+                ],
+                "summary": "Api: Авторизация",
+                "description": "Получение персонального токена",
+                "operationId": "auth.login",
+                "requestBody": {
+                    "description": "Учетные данные",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "title": "Логин (E-mail)",
+                                        "type": "string",
+                                        "nullable": "false"
+                                    },
+                                    "password": {
+                                        "title": "Пароль",
+                                        "type": "string",
+                                        "nullable": "false"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "examples": {
+                                "Admin": {
+                                    "summary": "Admin",
+                                    "value": {
+                                        "email": "admin@test.com",
+                                        "password": "admin"
+                                    }
+                                },
+                                "Moderator": {
+                                    "summary": "Moderator",
+                                    "value": {
+                                        "email": "employee@test.com",
+                                        "password": "employee"
+                                    }
+                                },
+                                "User": {
+                                    "summary": "User",
+                                    "value": {
+                                        "email": "user1@test.com",
+                                        "password": "user"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TokenResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/me": {
+            "post": {
+                "tags": [
+                    "Авторизация"
+                ],
+                "summary": "Api: Авторизованный пользователь",
+                "description": "Информация об авторизованном пользователе",
+                "operationId": "auth.me",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "Авторизация"
+                ],
+                "summary": "Api: Logout",
+                "description": "Logout",
+                "operationId": "auth.logout",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/MessageResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            }
+        },
         "/v1/category": {
             "get": {
                 "tags": [
@@ -247,7 +553,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "successful operation",
                         "content": {
                             "application/json": {
@@ -674,6 +980,692 @@
                     }
                 ]
             }
+        },
+        "/v1/user": {
+            "get": {
+                "tags": [
+                    "Пользователи"
+                ],
+                "summary": "Api: Список пользователей",
+                "description": "Список пользователей",
+                "operationId": "v1.user.getList",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Поиск по совпадению",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Test"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Статус",
+                        "required": false,
+                        "allowEmptyValue": true,
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                1,
+                                2
+                            ],
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Номер страницы",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Записей на страницу",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "example": "10"
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Соротировка по полю",
+                        "required": false,
+                        "allowEmptyValue": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "title",
+                                "status",
+                                "created"
+                            ],
+                            "default": "title"
+                        }
+                    },
+                    {
+                        "name": "reverse",
+                        "in": "query",
+                        "description": "Реверс сортировки",
+                        "required": false,
+                        "allowEmptyValue": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "title": "Список пользователей",
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UserResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Пользователи"
+                ],
+                "summary": "Api: Добавить пользователя",
+                "description": "Добавить пользователя",
+                "operationId": "v1.user.store",
+                "requestBody": {
+                    "description": "Данные нового пользователя",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "title": "ФИО",
+                                        "type": "string",
+                                        "nullable": "false"
+                                    },
+                                    "email": {
+                                        "title": "Логин (E-mail)",
+                                        "type": "string",
+                                        "nullable": "false"
+                                    },
+                                    "password": {
+                                        "title": "Пароль",
+                                        "type": "string",
+                                        "nullable": "false"
+                                    },
+                                    "password_confirmation": {
+                                        "title": "Пароль еще раз",
+                                        "type": "string",
+                                        "nullable": "false"
+                                    },
+                                    "status": {
+                                        "title": "Статус",
+                                        "type": "integer",
+                                        "nullable": "true"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "examples": {
+                                "Active user": {
+                                    "summary": "Active user",
+                                    "value": {
+                                        "name": "Test 1",
+                                        "email": "tets1@test.com",
+                                        "password": "qwerty",
+                                        "password_confirmation": "qwerty",
+                                        "status": 1
+                                    }
+                                },
+                                "Blocked user": {
+                                    "summary": "Blocked user",
+                                    "value": {
+                                        "name": "Test 2",
+                                        "email": "tets1@test.com",
+                                        "password": "qwerty",
+                                        "password_confirmation": "qwerty",
+                                        "status": 2
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            }
+        },
+        "/v1/user/{id}": {
+            "get": {
+                "tags": [
+                    "Пользователи"
+                ],
+                "summary": "Api: Просмотр отдельного пользователя",
+                "description": "Просмотр отдельного пользователя",
+                "operationId": "v1.user.show",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID пользователя",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "examples": {
+                                    "Some user": {
+                                        "summary": "Some user",
+                                        "value": {
+                                            "id": 1,
+                                            "name": "Test User",
+                                            "email": "test@test.com",
+                                            "status": 1,
+                                            "created": "2024-03-01 11:00:00",
+                                            "updated": "2024-03-01 11:00:00"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Пользователи"
+                ],
+                "summary": "Api: Обновить пользователя",
+                "description": "Обновить пользователя",
+                "operationId": "v1.user.update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID пользователя",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Обновленные данные пользователя",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "title": "ФИО",
+                                        "type": "string",
+                                        "nullable": "true"
+                                    },
+                                    "password": {
+                                        "title": "Пароль",
+                                        "type": "string",
+                                        "nullable": "true"
+                                    },
+                                    "password_confirmation": {
+                                        "title": "Пароль еще раз",
+                                        "type": "string",
+                                        "nullable": "true"
+                                    },
+                                    "status": {
+                                        "title": "Статус",
+                                        "type": "integer",
+                                        "nullable": "true"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Пользователи"
+                ],
+                "summary": "Api: Удаление пользователя",
+                "description": "Удаление пользователя",
+                "operationId": "v1.user.destroy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID пользователя",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/MessageResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -752,6 +1744,100 @@
                     }
                 },
                 "type": "object"
+            },
+            "RoleResource": {
+                "title": "Карточка роли",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "Transform the resource into an array.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "title": {
+                        "title": "Название",
+                        "type": "string",
+                        "example": "Test User"
+                    },
+                    "note": {
+                        "title": "Описание",
+                        "type": "string",
+                        "example": "test@test.com"
+                    },
+                    "created": {
+                        "title": "Создана",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01 12:00:00"
+                    },
+                    "updated": {
+                        "title": "Обновлена",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01 12:00:00"
+                    }
+                },
+                "type": "object"
+            },
+            "TokenResource": {
+                "title": "Персональный токен",
+                "properties": {
+                    "token": {
+                        "title": "Токен",
+                        "description": "Transform the resource into an array.",
+                        "type": "string",
+                        "example": "1|abcdefjhijklmn"
+                    }
+                },
+                "type": "object"
+            },
+            "UserResource": {
+                "title": "Карточка пользователя",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "Transform the resource into an array.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "name": {
+                        "title": "ФИО",
+                        "type": "string",
+                        "example": "Test User"
+                    },
+                    "email": {
+                        "title": "Логин",
+                        "type": "string",
+                        "example": "test@test.com"
+                    },
+                    "status": {
+                        "title": "Статус",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "created": {
+                        "title": "Создана",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01 12:00:00"
+                    },
+                    "updated": {
+                        "title": "Обновлена",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01 12:00:00"
+                    },
+                    "": {
+                        "title": "Роли",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/RoleResource"
+                        }
+                    }
+                },
+                "type": "object"
             }
         },
         "securitySchemes": {
@@ -766,6 +1852,14 @@
         }
     },
     "tags": [
+        {
+            "name": "Авторизация",
+            "description": "Блок авторизации"
+        },
+        {
+            "name": "Пользователи",
+            "description": "Блок пользователей"
+        },
         {
             "name": "Категории",
             "description": "Блок категорий"

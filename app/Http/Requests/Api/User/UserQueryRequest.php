@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Http\Requests\Api\Item;
+namespace App\Http\Requests\Api\User;
 
-use App\Enums\EItemStatus;
+use App\Enums\ESoftStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
 
-class ItemFilterRequest extends FormRequest {
+class UserQueryRequest extends FormRequest {
 
     public function prepareForValidation()
     {
-        if (!is_null($this->category)) {
-            $this->merge(['category' => explode(',', $this->category)]);
+        if (is_null($this->order)) {
+            $this->merge(['order' => 'title']);
         }
 
-        if (!is_null($this->status)) {
-            $this->merge(['status' => explode(',', $this->status)]);
+        if (is_null($this->reverse)) {
+            $this->merge(['reverse' => false]);
         }
     }
 
@@ -40,12 +40,11 @@ class ItemFilterRequest extends FormRequest {
         return [
 
             'q' => ['sometimes', 'string'],
-            'status' => ['sometimes', 'array'],
-            'status.*' => ['sometimes', new Enum(EItemStatus::class)],
-            'category' => ['sometimes', 'array'],
-            'category.*' => ['sometimes', 'integer', 'exists:categories,id'],
+            'status' => ['sometimes', new Enum(ESoftStatus::class)],
             'page' => ['sometimes', 'integer', 'min:1'],
             'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
+            'order' => ['sometimes', 'string', 'min:1', 'max:100'],
+            'reverse' => ['sometimes', 'boolean'],
         ];
     }
 }

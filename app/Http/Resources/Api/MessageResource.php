@@ -29,7 +29,6 @@ class MessageResource extends JsonResource {
     {
         return [
             'status' => true,
-            'msg' => null,
         ];
     }
 

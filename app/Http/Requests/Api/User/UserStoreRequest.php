@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Api\Item;
+namespace App\Http\Requests\Api\User;
 
-use App\Enums\EItemStatus;
+use App\Enums\ESoftStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
-class ItemStoreRequest extends FormRequest {
+
+class UserStoreRequest extends FormRequest {
 
     /**
      * Determine if the user is authorized to make this request.
@@ -27,11 +28,10 @@ class ItemStoreRequest extends FormRequest {
     {
         return [
 
-            'title' => ['required', 'string'],
-            'body' => ['sometimes', 'string'],
-            'price' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
-            'category' => ['required', 'integer', 'exists:categories,id'],
-            'status' => ['sometimes', new Enum(EItemStatus::class)],
+            'name' => ['required', 'string', 'min:2', 'max:128'],
+            'email' => ['required', 'string', 'email', 'unique:users'],
+            'password' => ['required', 'confirmed'],
+            'status' => ['sometimes', new Enum(ESoftStatus::class)],
         ];
     }
 }

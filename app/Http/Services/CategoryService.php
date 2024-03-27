@@ -2,43 +2,44 @@
 
 namespace App\Http\Services;
 
+use App\Enums\EOrderReverse;
 use App\Exceptions\CategoryNotFoundException;
-use App\Http\Resources\Api\CategoryResource;
 use App\Models\Category;
 use App\Models\Scopes\CategoryScope;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 
 class CategoryService {
 
     /**
      * @param array $data
-     * @return JsonResource
+     * @param string|null $order
+     * @param string|null $reverse
+     * @return Collection|LengthAwarePaginator
      * @throws BindingResolutionException
      */
-    public function index(array $data): JsonResource
+    public function index(array $data, ?string $order = 'title', ?string $reverse = EOrderReverse::ASC->value): Collection|LengthAwarePaginator
     {
         $filter = app()->make(CategoryScope::class, [
             'queryParams' => array_filter($data)
         ]);
 
         $categories = Category::query()->filter($filter)
-            ->orderBy('title');
+            ->orderBy($order, $reverse);
 
-        $categories = is_null($data['limit'] ?? null)
+        return is_null($data['limit'] ?? null)
             ? $categories->get()
             : $categories->paginate($data['limit']);
-
-        return CategoryResource::collection($categories);
     }
 
     /**
      * @param int $id
-     * @return JsonResource
+     * @return Category
      * @throws CategoryNotFoundException
      */
-    public function show(int $id): JsonResource
+    public function show(int $id): Category
     {
         $category = Category::find($id);
 
@@ -46,14 +47,14 @@ class CategoryService {
             throw new CategoryNotFoundException();
         }
 
-        return CategoryResource::make($category);
+        return $category;
     }
 
     /**
      * @param array $data
-     * @return JsonResource
+     * @return Category
      */
-    public function store(array $data): JsonResource
+    public function store(array $data): Category
     {
         return Category::create($data);
     }
@@ -61,10 +62,10 @@ class CategoryService {
     /**
      * @param int $id
      * @param array $data
-     * @return JsonResource
+     * @return Category
      * @throws CategoryNotFoundException
      */
-    public function update(int $id, array $data): JsonResource
+    public function update(int $id, array $data): Category
     {
         $category = Category::findOrFail($id);
 
@@ -79,10 +80,10 @@ class CategoryService {
 
     /**
      * @param int $id
-     * @return JsonResource
+     * @return void
      * @throws CategoryNotFoundException
      */
-    public function destroy(int $id): JsonResource
+    public function destroy(int $id): void
     {
         $category = Category::find($id);
 
@@ -91,8 +92,6 @@ class CategoryService {
         }
 
         $category->delete();
-
-        return $category;
     }
 
 }

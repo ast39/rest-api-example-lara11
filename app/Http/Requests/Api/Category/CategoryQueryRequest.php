@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\Category;
 
+use App\Enums\EOrderReverse;
 use App\Enums\ESoftStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
@@ -16,7 +17,7 @@ class CategoryQueryRequest extends FormRequest {
         }
 
         if (is_null($this->reverse)) {
-            $this->merge(['reverse' => false]);
+            $this->merge(['reverse' => EOrderReverse::ASC->value]);
         }
     }
 
@@ -44,7 +45,7 @@ class CategoryQueryRequest extends FormRequest {
             'page' => ['sometimes', 'integer', 'min:1'],
             'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
             'order' => ['sometimes', 'string', 'min:1', 'max:100'],
-            'reverse' => ['sometimes', 'boolean'],
+            'reverse' => ['sometimes', new Enum(EOrderReverse::class)],
         ];
     }
 }

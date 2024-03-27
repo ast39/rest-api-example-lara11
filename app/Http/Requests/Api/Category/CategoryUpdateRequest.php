@@ -6,6 +6,7 @@ use App\Enums\ESoftStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
+
 class CategoryUpdateRequest extends FormRequest {
 
     /**

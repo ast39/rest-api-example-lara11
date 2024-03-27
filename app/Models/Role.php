@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\Filter\Filterable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 
-class Item extends Model {
+class Role extends Model {
 
-    protected $table = 'items';
+    use Filterable;
+
+
+    protected $table = 'roles';
 
     protected $primaryKey = 'id';
 
@@ -19,10 +23,11 @@ class Item extends Model {
     public    $timestamps = true;
 
 
-    public function category(): BelongsTo
+    public function users(): BelongsToMany
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsToMany(User::class, 'user_roles');
     }
+
 
     protected function casts(): array
     {
@@ -42,9 +47,11 @@ class Item extends Model {
     ];
 
     protected $fillable = [
-        'id', 'category_id', 'title', 'body', 'price', 'status',
+        'id', 'title', 'note',
         'created_at', 'updated_at',
     ];
 
-    protected $hidden = [];
+    protected $hidden = [
+        //
+    ];
 }
