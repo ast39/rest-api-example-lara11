@@ -13,6 +13,7 @@ use App\Http\Resources\Api\ErrorResource;
 use App\Http\Resources\Api\MessageResource;
 use App\Http\Services\UserService;
 use App\Http\Traits\Accessable;
+use App\Jobs\SendEmailJob;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -225,6 +226,12 @@ class UserController extends Controller {
             DB::beginTransaction();
 
             $item = $this->userService->store($data);
+
+            dispatch(new SendEmailJob([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => $data['password'],
+            ]));
 
             DB::commit();
 

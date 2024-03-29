@@ -64,6 +64,9 @@ $ php artisan storage:link
 
 # Запустить шедулер
 $ php artisan schedule:work
+
+# Запустить очереди
+$ php artisan queue:work
 ```
 
 ### Рутовая учетка
