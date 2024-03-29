@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Dto\NewUserDto;
 use App\Dto\ServerErrorDto;
+use App\Events\UserCreated;
 use App\Exceptions\NotAuthorizedException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\User\UserQueryRequest;
@@ -227,11 +229,7 @@ class UserController extends Controller {
 
             $item = $this->userService->store($data);
 
-            dispatch(new SendEmailJob([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => $data['password'],
-            ]));
+            event(new UserCreated(new NewUserDto($data)));
 
             DB::commit();
 

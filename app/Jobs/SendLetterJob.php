@@ -2,7 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Events\NewUserEvent;
+use App\Dto\NewUserDto;
+use App\Notifications\EmailNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -11,19 +12,19 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
 
-class SendEmailJob implements ShouldQueue {
+class SendLetterJob implements ShouldQueue {
 
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 
-    private array $details;
+    private NewUserDto $user;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(array $details)
+    public function __construct(NewUserDto $user)
     {
-        $this->details = $details;
+        $this->user = $user;
     }
 
     /**
@@ -32,6 +33,6 @@ class SendEmailJob implements ShouldQueue {
     public function handle(): void
     {
         Mail::to('alexandr.statut@gmail.com')
-            ->send(new NewUserEvent($this->details));
+            ->send(new EmailNotification($this->user));
     }
 }
