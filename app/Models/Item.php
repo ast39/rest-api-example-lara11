@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use App\Models\Scopes\Filter\Filterable;
+use App\Observers\ItemObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 
+#[ObservedBy([ItemObserver::class])]
 class Item extends Model {
 
     use Filterable;
