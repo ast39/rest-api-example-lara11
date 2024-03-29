@@ -42,7 +42,7 @@ class ItemStoreRequest extends FormRequest {
             'title' => ['required', 'string', 'min:3', 'max:128'],
             'body' => ['sometimes', 'string', 'max:1000'],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
-            'price' => ['required', 'decimal'],
+            'price' => ['required', 'decimal:0,2'],
             'status' => ['sometimes', 'integer', new Enum(ESoftStatus::class)],
             'images' => ['sometimes'],
             'images.*' => ['sometimes', 'integer', 'exists:images,id'],

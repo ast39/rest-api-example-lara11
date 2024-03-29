@@ -80,6 +80,8 @@ class ItemService {
 
         $item->update($data);
 
+        $item->images()->sync(collect($data)->get('images'));
+
         return $item;
     }
 

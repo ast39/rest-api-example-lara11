@@ -38,8 +38,8 @@ class ItemUpdateRequest extends FormRequest {
             'title' => ['sometimes', 'string', 'min:3', 'max:128'],
             'body' => ['sometimes', 'string', 'max:1000'],
             'category_id' => ['sometimes', 'integer', 'exists:categories,id'],
-            'price' => ['sometimes', 'decimal'],
-            'status' => ['sometimes', 'decimal'],
+            'price' => ['sometimes', 'decimal:0,2'],
+            'status' => ['sometimes', 'integer'],
             'images' => ['sometimes'],
             'images.*' => ['sometimes', 'integer', 'exists:images,id'],
         ];
