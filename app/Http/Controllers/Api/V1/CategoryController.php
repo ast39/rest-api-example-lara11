@@ -90,7 +90,7 @@ class CategoryController extends Controller {
 
             DB::beginTransaction();
 
-            $list = $this->categoryService->index($data, $data['order'], $data['reverse']);
+            $list = $this->categoryService->index($data);
 
             DB::commit();
 
@@ -154,7 +154,7 @@ class CategoryController extends Controller {
 
             DB::beginTransaction();
 
-            $item =  $this->categoryService->show($id);
+            $item = $this->categoryService->show($id);
 
             DB::commit();
 
@@ -355,7 +355,7 @@ class CategoryController extends Controller {
             DB::commit();
 
             return MessageResource::make(true)
-                ->additional(['data' => ['msg' => 'Категория удалена']])
+                ->additional(['data' => ['msg' => __('msg.category.deleted')]])
                 ->response()
                 ->setStatusCode(200);
         } catch(\Exception $e) {

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\V1\ImageController;
+use App\Http\Controllers\Api\V1\ItemController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
@@ -20,14 +22,16 @@ Route::group(['prefix' => 'auth'], function () {
 Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     Route::apiResource('user', UserController::class);
     Route::apiResource('category', CategoryController::class);
+    Route::apiResource('image', ImageController::class)->except(['index', 'update']);
+    Route::apiResource('item', ItemController::class);
 });
 
 
-//Route::fallback(function () {
-//    return response()->json([
-//        'message' => 'Endpoint not exist. If error persists, contact alexandr.statut@gmail.com',
-//    ], 404);
-//});
+Route::fallback(function () {
+    return response()->json([
+        'message' => 'Endpoint not exist. If error persists, contact alexandr.statut@gmail.com',
+    ], 404);
+});
 
 if (env('APP_ENV') === 'production') {
     URL::forceScheme('https');

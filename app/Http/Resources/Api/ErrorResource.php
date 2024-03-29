@@ -21,6 +21,7 @@ class ErrorResource extends JsonResource {
 
     public static $wrap = 'error';
 
+
     /**
      * Transform the resource into an array.
      *

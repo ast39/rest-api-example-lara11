@@ -10,6 +10,9 @@ $ composer install
 
 # Создать свой .env файл на основе .env.example
 $ mv -v .env.example .env
+
+# Создать симлинки
+$ php artisan storage:link
 ```
 
 Теперь заполните файл .env своими настройками подключения к БД

@@ -12,9 +12,9 @@ class ServerErrorDto {
     public ?string $message;
 
 
-    public function __construct(?string $message = null, int $code = 500)
+    public function __construct(?string $message = null, int|string $code = 500)
     {
         $this->message = $message ?? __('error.global.500');
-        $this->code = $code;
+        $this->code = (int) $code;
     }
 }

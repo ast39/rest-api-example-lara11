@@ -15,13 +15,14 @@ class UserService {
 
     /**
      * @param array $data
-     * @param string|null $order
-     * @param string|null $reverse
      * @return Collection|LengthAwarePaginator
      * @throws BindingResolutionException
      */
-    public function index(array $data, ?string $order = 'title', ?string $reverse = EOrderReverse::ASC->value): Collection|LengthAwarePaginator
+    public function index(array $data): Collection|LengthAwarePaginator
     {
+        $order = $data['order'] ?? 'name';
+        $reverse = $data['reverse'] ?? EOrderReverse::ASC->value;
+
         $filter = app()->make(UserScope::class, [
             'queryParams' => array_filter($data)
         ]);

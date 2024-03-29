@@ -15,13 +15,14 @@ class CategoryService {
 
     /**
      * @param array $data
-     * @param string|null $order
-     * @param string|null $reverse
      * @return Collection|LengthAwarePaginator
      * @throws BindingResolutionException
      */
-    public function index(array $data, ?string $order = 'title', ?string $reverse = EOrderReverse::ASC->value): Collection|LengthAwarePaginator
+    public function index(array $data): Collection|LengthAwarePaginator
     {
+        $order = $data['order'] ?? 'title';
+        $reverse = $data['reverse'] ?? EOrderReverse::ASC->value;
+
         $filter = app()->make(CategoryScope::class, [
             'queryParams' => array_filter($data)
         ]);
@@ -67,7 +68,7 @@ class CategoryService {
      */
     public function update(int $id, array $data): Category
     {
-        $category = Category::findOrFail($id);
+        $category = Category::find($id);
 
         if (!$category) {
             throw new CategoryNotFoundException();

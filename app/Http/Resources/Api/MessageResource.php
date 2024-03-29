@@ -7,24 +7,22 @@ use Illuminate\Http\Request;
 use OpenApi\Annotations as OA;
 
 
+/**
+ * Transform the resource into an array.
+ *
+ * @OA\Schema(
+ *   type="object",
+ *   schema="MessageResource",
+ *   title="Простой ответ",
+ *   @OA\Property(title="Статус", property="status", type="boolean", example="true"),
+ *   @OA\Property(title="Сообщение", property="msg", type="string", example="Test"),
+ * )
+ */
 class MessageResource extends JsonResource {
 
     public static $wrap = 'data';
 
-    /**
-     * Transform the resource into an array.
-     *
-     * @param Request $request
-     * @return array
-     *
-     * @OA\Schema(
-     *   type="object",
-     *   schema="MessageResource",
-     *   title="Простой ответ",
-     *   @OA\Property(title="Статус", property="status", type="boolean", example="true"),
-     *   @OA\Property(title="Сообщение", property="msg", type="string", example="Test"),
-     * )
-     */
+
     public function toArray(Request $request): array
     {
         return [

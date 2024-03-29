@@ -195,7 +195,7 @@ class AuthController extends Controller {
             auth()->user()->tokens()->delete();
 
             return MessageResource::make($request)
-                ->additional(['data' => ['msg' => 'Авторизация сброшена']])
+                ->additional(['data' => ['msg' => __('msg.auth.off')]])
                 ->response()
                 ->setStatusCode(200);
         } catch(\Exception $e) {

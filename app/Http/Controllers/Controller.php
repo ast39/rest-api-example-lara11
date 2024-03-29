@@ -55,6 +55,14 @@ use OpenApi\Annotations as OA;
  *   name="Категории",
  *   description="Блок категорий"
  * ),
+ * @OA\Tag(
+ *   name="Изображения",
+ *   description="Блок изображений"
+ * ),
+ * @OA\Tag(
+ *   name="Товары",
+ *   description="Блок товаров"
+ * ),
  */
 abstract class Controller {
 
