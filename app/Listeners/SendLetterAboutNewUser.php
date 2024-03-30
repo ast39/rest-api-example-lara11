@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\UserCreated;
-use App\Jobs\SendLetterJob;
+use App\Jobs\NewUserSendLetterJob;
 
 
 class SendLetterAboutNewUser {
@@ -21,6 +21,6 @@ class SendLetterAboutNewUser {
      */
     public function handle(UserCreated $event): void
     {
-        dispatch(new SendLetterJob($event->user));
+        dispatch(new NewUserSendLetterJob($event->user));
     }
 }

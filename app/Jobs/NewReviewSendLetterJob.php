@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Dto\NewUserDto;
-use App\Mail\UserCreated;
+use App\Dto\NewReviewDto;
+use App\Mail\ReviewCreated;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -12,19 +12,19 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
 
-class SendLetterJob implements ShouldQueue {
+class NewReviewSendLetterJob implements ShouldQueue {
 
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 
-    private NewUserDto $user;
+    private NewReviewDto $review;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(NewUserDto $user)
+    public function __construct(NewReviewDto $review)
     {
-        $this->user = $user;
+        $this->review = $review;
     }
 
     /**
@@ -32,6 +32,6 @@ class SendLetterJob implements ShouldQueue {
      */
     public function handle(): void
     {
-        Mail::send(new UserCreated($this->user));
+        Mail::send(new ReviewCreated($this->review));
     }
 }

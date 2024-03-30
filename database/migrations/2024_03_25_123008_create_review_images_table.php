@@ -4,31 +4,33 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-
-return new class extends Migration {
-
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
-        Schema::create('imageable', function (Blueprint $table) {
+        Schema::create('review_images', function (Blueprint $table) {
 
             $table->unsignedBigInteger('image_id')
                 ->index()
                 ->comment('ID файла');
 
-            $table->unsignedBigInteger('item_id')
+            $table->unsignedBigInteger('review_id')
                 ->index()
-                ->comment('ID товара');
+                ->comment('ID отзыва');
 
             $table->comment('Pivot изображения товаров');
 
-            $table->foreign('image_id', 'ii_image_key')
+            $table->foreign('image_id', 'ri_image_key')
                 ->references('id')
                 ->on('images')
                 ->onDelete('cascade');
 
-            $table->foreign('item_id', 'ii_item_key')
+            $table->foreign('review_id', 'ri_review_key')
                 ->references('id')
-                ->on('items')
+                ->on('reviews')
                 ->onDelete('cascade');
         });
     }
@@ -38,11 +40,11 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('item_images', function(Blueprint $table) {
-            $table->dropForeign('ii_file_key');
-            $table->dropForeign('ii_item_key');
+        Schema::table('review_images', function(Blueprint $table) {
+            $table->dropForeign('ri_file_key');
+            $table->dropForeign('ri_review_key');
         });
 
-        Schema::dropIfExists('item_images');
+        Schema::dropIfExists('review_images');
     }
 };

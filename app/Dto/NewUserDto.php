@@ -3,19 +3,19 @@
 namespace App\Dto;
 
 
-class NewUserDto {
+readonly class NewUserDto {
 
-    public readonly string $name;
+    public string $name;
 
-    public readonly string $email;
+    public string $email;
 
-    public readonly string $password;
+    public string $password;
 
 
     public function __construct(array $data)
     {
-        $this->name = $data['name'] ?? 'Пользователь';
-        $this->email = $data['email'] ?? 'Не указан';
-        $this->password = $data['password'] ?? 'Не указан';
+        $this->name = $data['name'] ?? 'Не указано';
+        $this->email = $data['email'] ?? 'Не указано';
+        $this->password = $data['password'] ?? 'Не указано';
     }
 }

@@ -1548,6 +1548,12 @@
                                         "type": "integer",
                                         "example": "1",
                                         "nullable": "true"
+                                    },
+                                    "images": {
+                                        "title": "Изображения",
+                                        "type": "string",
+                                        "example": "1,2",
+                                        "nullable": "true"
                                     }
                                 },
                                 "type": "object"
@@ -1556,14 +1562,21 @@
                                 "Active Item": {
                                     "summary": "Active Item",
                                     "value": {
+                                        "article": "ABCDEF",
                                         "title": "Test 1",
-                                        "status": 1
+                                        "category_id": 1,
+                                        "price": 490.9,
+                                        "status": 1,
+                                        "images": "1,2"
                                     }
                                 },
                                 "Blocked Item": {
                                     "summary": "Blocked Item",
                                     "value": {
+                                        "article": "DFGERT",
                                         "title": "Test 2",
+                                        "category_id": 1,
+                                        "price": 590.9,
                                         "status": 2
                                     }
                                 }
@@ -1796,16 +1809,40 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
+                                    "article": {
+                                        "title": "Артикул",
+                                        "type": "string",
+                                        "example": "ABCDEF",
+                                        "nullable": "true"
+                                    },
                                     "title": {
                                         "title": "Заголовок",
                                         "type": "string",
                                         "example": "Test",
                                         "nullable": "true"
                                     },
+                                    "category_id": {
+                                        "title": "Категория",
+                                        "type": "integer",
+                                        "example": "1",
+                                        "nullable": "true"
+                                    },
+                                    "price": {
+                                        "title": "Цена",
+                                        "type": "decimal",
+                                        "example": "499.90",
+                                        "nullable": "true"
+                                    },
                                     "status": {
                                         "title": "Статус",
                                         "type": "integer",
                                         "example": "1",
+                                        "nullable": "true"
+                                    },
+                                    "images": {
+                                        "title": "Изображения",
+                                        "type": "string",
+                                        "example": "1,2",
                                         "nullable": "true"
                                     }
                                 },
@@ -1909,6 +1946,716 @@
                         "name": "id",
                         "in": "path",
                         "description": "ID товара",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/MessageResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            }
+        },
+        "/v1/review": {
+            "get": {
+                "tags": [
+                    "Отзывы"
+                ],
+                "summary": "Api: Список отзывов",
+                "description": "Список отзывов",
+                "operationId": "v1.review.getList",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Поиск по совпадению",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Test"
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Поиск по категориям",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1,2,3"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Статус",
+                        "required": false,
+                        "allowEmptyValue": true,
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                1,
+                                2
+                            ],
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Номер страницы",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Записей на страницу",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "example": "10"
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Соротировка по полю",
+                        "required": false,
+                        "allowEmptyValue": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "title",
+                                "status",
+                                "created"
+                            ],
+                            "default": "title"
+                        }
+                    },
+                    {
+                        "name": "reverse",
+                        "in": "query",
+                        "description": "Реверс сортировки",
+                        "required": false,
+                        "allowEmptyValue": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "title": "Список товаров",
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ReviewResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Отзывы"
+                ],
+                "summary": "Api: Добавить отзыв",
+                "description": "Добавить отзыв",
+                "operationId": "v1.review.store",
+                "requestBody": {
+                    "description": "Данные нового отзыва",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "article",
+                                    "title",
+                                    "category_id",
+                                    "price"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "title": "ID пользователя",
+                                        "type": "integer",
+                                        "example": "1",
+                                        "nullable": "false"
+                                    },
+                                    "item_id": {
+                                        "title": "ID товара",
+                                        "type": "integer",
+                                        "example": "1",
+                                        "nullable": "false"
+                                    },
+                                    "rate": {
+                                        "title": "Оценка",
+                                        "type": "integer",
+                                        "example": "1",
+                                        "nullable": "false"
+                                    },
+                                    "body": {
+                                        "title": "Отзыв",
+                                        "type": "string",
+                                        "example": "Test",
+                                        "nullable": "true"
+                                    },
+                                    "status": {
+                                        "title": "Статус",
+                                        "type": "integer",
+                                        "example": "1",
+                                        "nullable": "true"
+                                    },
+                                    "images": {
+                                        "title": "Изображения",
+                                        "type": "string",
+                                        "example": "1,2",
+                                        "nullable": "true"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "examples": {
+                                "Review vs images": {
+                                    "summary": "Review vs images",
+                                    "value": {
+                                        "user_id": 1,
+                                        "item_id": 1,
+                                        "body": "Test description",
+                                        "rate": 5,
+                                        "status": 1,
+                                        "images": "1,2"
+                                    }
+                                },
+                                "Review vs out images": {
+                                    "summary": "Review vs out images",
+                                    "value": {
+                                        "user_id": 1,
+                                        "item_id": 1,
+                                        "body": "Test description",
+                                        "rate": 3
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ReviewResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            }
+        },
+        "/v1/review/{id}": {
+            "get": {
+                "tags": [
+                    "Отзывы"
+                ],
+                "summary": "Api: Просмотр отдельного отзыва",
+                "description": "Просмотр отдельного отзыва",
+                "operationId": "v1.Review.show",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID отзыва",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ReviewResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Отзывы"
+                ],
+                "summary": "Api: Обновить отзыв",
+                "description": "Обновить отзыв",
+                "operationId": "v1.review.update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID товара",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Обновленные данные отзыва",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "title": "ID пользователя",
+                                        "type": "integer",
+                                        "example": "1",
+                                        "nullable": "true"
+                                    },
+                                    "item_id": {
+                                        "title": "ID товара",
+                                        "type": "integer",
+                                        "example": "1",
+                                        "nullable": "true"
+                                    },
+                                    "rate": {
+                                        "title": "Оценка",
+                                        "type": "integer",
+                                        "example": "1",
+                                        "nullable": "true"
+                                    },
+                                    "body": {
+                                        "title": "Отзыв",
+                                        "type": "string",
+                                        "example": "Test",
+                                        "nullable": "true"
+                                    },
+                                    "status": {
+                                        "title": "Статус",
+                                        "type": "integer",
+                                        "example": "1",
+                                        "nullable": "true"
+                                    },
+                                    "images": {
+                                        "title": "Изображения",
+                                        "type": "string",
+                                        "example": "1,2",
+                                        "nullable": "true"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ReviewResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Отзывы"
+                ],
+                "summary": "Api: Удаление отзыва",
+                "description": "Удаление отзыва",
+                "operationId": "v1.review.destroy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID отзыва",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -2762,7 +3509,7 @@
                         "type": "string",
                         "example": "avatar"
                     },
-                    "fullname": {
+                    "filename": {
                         "title": "Имя файла",
                         "type": "string",
                         "example": "test"
@@ -2818,7 +3565,7 @@
                         "example": "Test description"
                     },
                     "category": {
-                        "$ref": "#/components/schemas/ItemResource"
+                        "$ref": "#/components/schemas/CategoryResource"
                     },
                     "price": {
                         "title": "Цена",
@@ -2858,6 +3605,52 @@
                         "title": "Сообщение",
                         "type": "string",
                         "example": "Test"
+                    }
+                },
+                "type": "object"
+            },
+            "ReviewResource": {
+                "title": "Карточка отзыва",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "Transform the resource into an array.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "item": {
+                        "$ref": "#/components/schemas/ItemResource"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserResource"
+                    },
+                    "rate": {
+                        "title": "Оценка",
+                        "type": "integer",
+                        "example": "5"
+                    },
+                    "body": {
+                        "title": "Описание",
+                        "type": "string",
+                        "example": "Test description"
+                    },
+                    "status": {
+                        "title": "Статус",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "created": {
+                        "title": "Создан",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01 12:00:00"
+                    },
+                    "updated": {
+                        "title": "Обновлен",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01 12:00:00"
                     }
                 },
                 "type": "object"
@@ -2988,6 +3781,10 @@
         {
             "name": "Товары",
             "description": "Блок товаров"
+        },
+        {
+            "name": "Отзывы",
+            "description": "Блок отзывов"
         }
     ],
     "externalDocs": {
