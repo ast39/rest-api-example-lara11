@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Dto\NewUserDto;
 use App\Mail\UserCreated;
-use App\Notifications\EmailNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
