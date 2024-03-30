@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Dto\NewUserDto;
+use App\Mail\UserCreated;
 use App\Notifications\EmailNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -33,6 +34,6 @@ class SendLetterJob implements ShouldQueue {
     public function handle(): void
     {
         Mail::to('alexandr.statut@gmail.com')
-            ->send(new EmailNotification($this->user));
+            ->send(new UserCreated($this->user));
     }
 }
