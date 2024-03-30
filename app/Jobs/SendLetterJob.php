@@ -32,7 +32,6 @@ class SendLetterJob implements ShouldQueue {
      */
     public function handle(): void
     {
-        Mail::to('alexandr.statut@gmail.com')
-            ->send(new UserCreated($this->user));
+        Mail::send(new UserCreated($this->user));
     }
 }

@@ -17,7 +17,7 @@ class AppServiceProvider extends ServiceProvider {
      */
     public function register(): void
     {
-        Event::listen(UserCreated::class, SendLetterAboutNewUser::class);
+        //
     }
 
     /**
