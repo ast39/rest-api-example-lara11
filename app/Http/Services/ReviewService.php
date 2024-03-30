@@ -20,7 +20,7 @@ class ReviewService {
      */
     public function index(array $data): Collection|LengthAwarePaginator
     {
-        $order = $data['order'] ?? 'title';
+        $order = $data['order'] ?? 'created_at';
         $reverse = $data['reverse'] ?? EOrderReverse::ASC->value;
 
         $filter = app()->make(ReviewScope::class, [

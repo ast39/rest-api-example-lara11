@@ -39,7 +39,7 @@ class Review extends Model {
 
     public function images(): BelongsToMany
     {
-        return $this->belongsToMany(Image::class, 'item_images');
+        return $this->belongsToMany(Image::class, 'review_images');
     }
 
 

@@ -2,12 +2,25 @@
 
 namespace App\Http\Requests\Api\Review;
 
+use App\Enums\EOrderReverse;
 use App\Enums\ESoftStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
+
 class ReviewQueryRequest extends FormRequest {
+
+    public function prepareForValidation()
+    {
+        if (!is_null($this->items)) {
+            $this->merge(['items' => explode(',', $this->items)]);
+        }
+
+        if (!is_null($this->users)) {
+            $this->merge(['users' => explode(',', $this->users)]);
+        }
+    }
 
     /**
      * Determine if the user is authorized to make this request.
@@ -26,10 +39,17 @@ class ReviewQueryRequest extends FormRequest {
     {
         return [
 
-            'item_id' => ['nullable', 'integer', 'exists:items,id'],
-            'user_id' => ['nullable', 'integer', 'exists:users,id'],
-            'body' => ['nullable', 'string', 'max:1000'],
-            'status' => ['nullable', 'integer', new Enum(ESoftStatus::class)],
+            'q' => ['sometimes', 'string'],
+            'users' => ['sometimes', 'array'],
+            'users.*' => ['sometimes', 'integer'],
+            'items' => ['sometimes', 'array'],
+            'items.*' => ['sometimes', 'integer'],
+            'category.*' => ['sometimes', 'integer'],
+            'status' => ['sometimes', new Enum(ESoftStatus::class)],
+            'page' => ['sometimes', 'integer', 'min:1'],
+            'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
+            'order' => ['sometimes', 'string', 'min:1', 'max:100'],
+            'reverse' => ['sometimes', new Enum(EOrderReverse::class)],
         ];
     }
 }

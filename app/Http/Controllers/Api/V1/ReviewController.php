@@ -47,7 +47,8 @@ class ReviewController extends Controller {
      *    security={{"apiKey": {} }},
      *
      *    @OA\Parameter(name="q", description="Поиск по совпадению", example="Test", in="query", required=false, @OA\Schema(type="string")),
-     *    @OA\Parameter(name="category", description="Поиск по категориям", example="1,2,3", in="query", required=false, @OA\Schema(type="string")),
+     *    @OA\Parameter(name="items", description="Поиск по товарам", example="1,2,3", in="query", required=false, @OA\Schema(type="string")),
+     *    @OA\Parameter(name="users", description="Поиск по авторам", example="1,2,3", in="query", required=false, @OA\Schema(type="string")),
      *    @OA\Parameter(name="status", description="Статус", in="query", required=false, allowEmptyValue=true, schema={"type": "integer", "enum": {1, 2}, "default": 1}),
      *    @OA\Parameter(name="page", description="Номер страницы", in="query", required=false, example="1", @OA\Schema(type="integer", format="int32")),
      *    @OA\Parameter(name="limit", description="Записей на страницу", in="query", required=false, example="10", @OA\Schema(type="integer", format="int32")),
@@ -88,7 +89,7 @@ class ReviewController extends Controller {
 
             DB::beginTransaction();
 
-            $list = $this->ReviewService->index($data);
+            $list = $this->reviewService->index($data);
 
             DB::commit();
 
@@ -147,11 +148,11 @@ class ReviewController extends Controller {
 
             DB::beginTransaction();
 
-            $Review =  $this->reviewService->show($id);
+            $review = $this->reviewService->show($id);
 
             DB::commit();
 
-            return ReviewResource::make($Review)->response();
+            return ReviewResource::make($review)->response();
         } catch(\Exception $e) {
 
             DB::rollBack();

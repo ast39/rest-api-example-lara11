@@ -11,6 +11,13 @@ use Illuminate\Validation\Rules\Enum;
 
 class ReviewStoreRequest extends FormRequest {
 
+    public function prepareForValidation()
+    {
+        if (!is_null($this->images)) {
+            $this->merge(['images' => explode(',', $this->images)]);
+        }
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */

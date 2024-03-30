@@ -10,8 +10,9 @@ class ReviewScope extends AbstractFilter {
 
     public const Q = 'q';
 
-    public const USER = 'user';
-    public const ITEM = 'item';
+    public const USER = 'users';
+    public const ITEM = 'items';
+    public const STATUS = 'status';
 
     /**
      * @return array[]
@@ -21,8 +22,9 @@ class ReviewScope extends AbstractFilter {
         return [
 
             self::Q => [$this, 'q'],
-            self::USER => [$this, 'user'],
-            self::ITEM => [$this, 'item'],
+            self::USER => [$this, 'users'],
+            self::ITEM => [$this, 'items'],
+            self::STATUS => [$this, 'status'],
         ];
     }
 
@@ -31,13 +33,18 @@ class ReviewScope extends AbstractFilter {
         $builder->where('body', 'like', '%' . $value . '%');
     }
 
-    public function user(Builder $builder, $value): void
+    public function users(Builder $builder, $value): void
     {
         $builder->whereIn('user_id', $value);
     }
 
-    public function item(Builder $builder, $value): void
+    public function items(Builder $builder, $value): void
     {
         $builder->whereIn('item_id', $value);
+    }
+
+    public function status(Builder $builder, $value): void
+    {
+        $builder->where('status', $value);
     }
 }
