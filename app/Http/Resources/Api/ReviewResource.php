@@ -15,7 +15,7 @@ use OpenApi\Annotations as OA;
  *    schema="ReviewResource",
  *    title="Карточка отзыва",
  *    @OA\Property(title="ID", property="id", type="integer", format="int64", example="1"),
- *    @OA\Property(title="Товар", property="item", ref="#/components/schemas/ItemResource"),
+ *    @OA\Property(title="ID товара", property="item_id", type="integer", format="int64", example="1"),
  *    @OA\Property(title="Пользователь", property="user", ref="#/components/schemas/UserResource"),
  *    @OA\Property(title="Оценка", property="rate", type="integer", example="5"),
  *    @OA\Property(title="Описание", property="body", type="string", example="Test description"),

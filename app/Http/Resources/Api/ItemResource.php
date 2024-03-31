@@ -22,7 +22,10 @@ use OpenApi\Annotations as OA;
  *    @OA\Property(title="Цена", property="price", type="decimal", example="599.90"),
  *    @OA\Property(title="Статус", property="status", type="integer", example="1"),
  *    @OA\Property(title="Создана", property="created", type="datetime", example="2023-12-01 12:00:00"),
- *    @OA\Property(title="Обновлена", property="updated", type="datetime", example="2023-12-01 12:00:00")
+ *    @OA\Property(title="Обновлена", property="updated", type="datetime", example="2023-12-01 12:00:00"),
+ *    @OA\Property(title="Рейтинг", property="rating", type="decimal", example="4.5"),
+ *    @OA\Property(title="Отзывы", property="reviews", type="array", @OA\Items(ref="#/components/schemas/ReviewResource")),
+ *    @OA\Property(title="Изображения", property="images", type="array", @OA\Items(ref="#/components/schemas/ImageResource"))
  *  )
  */
 class ItemResource extends JsonResource {

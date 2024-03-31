@@ -2057,9 +2057,19 @@
                         "example": "Test"
                     },
                     {
-                        "name": "category",
+                        "name": "items",
                         "in": "query",
-                        "description": "Поиск по категориям",
+                        "description": "Поиск по товарам",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1,2,3"
+                    },
+                    {
+                        "name": "users",
+                        "in": "query",
+                        "description": "Поиск по авторам",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -3588,6 +3598,25 @@
                         "type": "string",
                         "format": "date-time",
                         "example": "2023-12-01 12:00:00"
+                    },
+                    "rating": {
+                        "title": "Рейтинг",
+                        "type": "decimal",
+                        "example": "4.5"
+                    },
+                    "reviews": {
+                        "title": "Отзывы",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReviewResource"
+                        }
+                    },
+                    "images": {
+                        "title": "Изображения",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ImageResource"
+                        }
                     }
                 },
                 "type": "object"
@@ -3619,8 +3648,11 @@
                         "format": "int64",
                         "example": "1"
                     },
-                    "item": {
-                        "$ref": "#/components/schemas/ItemResource"
+                    "item_id": {
+                        "title": "Товар",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
                     },
                     "user": {
                         "$ref": "#/components/schemas/UserResource"
@@ -3739,7 +3771,7 @@
                         "format": "date-time",
                         "example": "2023-12-01 12:00:00"
                     },
-                    "": {
+                    "roles": {
                         "title": "Роли",
                         "type": "array",
                         "items": {

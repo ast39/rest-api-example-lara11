@@ -19,7 +19,7 @@ use OpenApi\Annotations as OA;
  *   @OA\Property(title="Статус", property="status", type="integer", example="1"),
  *   @OA\Property(title="Создана", property="created", type="datetime", example="2023-12-01 12:00:00"),
  *   @OA\Property(title="Обновлена", property="updated", type="datetime", example="2023-12-01 12:00:00"),
- *   @OA\Property(title="Роли", type="array", @OA\Items(ref="#/components/schemas/RoleResource"))
+ *   @OA\Property(title="Роли", property="roles", type="array", @OA\Items(ref="#/components/schemas/RoleResource"))
  * )
  */
 class UserResource extends ApiResource {
