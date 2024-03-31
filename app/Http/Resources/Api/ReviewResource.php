@@ -34,7 +34,7 @@ class ReviewResource extends JsonResource {
         return [
 
             'id'  => $this->id ?? null,
-            'item' => ItemResource::make($this->item),
+            'item_id' => $this->item_id,
             'user' => UserResource::make($this->user),
             'rate' => $this->rate ?? null,
             'body' => $this->body ?? null,

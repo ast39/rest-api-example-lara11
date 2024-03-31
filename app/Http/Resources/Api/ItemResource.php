@@ -43,7 +43,10 @@ class ItemResource extends JsonResource {
             'status' => $this->status ?? null,
             'created' => $this->created_at ?? null,
             'updated' => $this->updated_at ?? null,
+            'rating' => $this->rating,
+            'reviews' => ReviewResource::collection($this->reviews),
             'images' => ImageResource::collection($this->images),
+
         ];
     }
 }

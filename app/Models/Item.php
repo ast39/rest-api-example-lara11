@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 #[ObservedBy([ItemObserver::class])]
@@ -37,6 +38,30 @@ class Item extends Model {
         return $this->belongsToMany(Image::class, 'item_images');
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'item_id', 'id');
+    }
+
+    public function getRatingAttribute(): float
+    {
+        $reviews = $this->reviews()->get();
+        $counter = $reviews->count();
+        $rating = 0;
+
+        if ($counter == 0) {
+            return 0;
+        }
+
+        $rating = array_sum(
+            array_map(function($review) {
+                return $review['rate'];
+            }, $reviews->toArray())
+        );
+
+        return round($rating / $counter, 2);
+    }
+
 
     protected function casts(): array
     {
@@ -52,7 +77,7 @@ class Item extends Model {
     ];
 
     protected $appends = [
-        //
+        'rating',
     ];
 
     protected $fillable = [
