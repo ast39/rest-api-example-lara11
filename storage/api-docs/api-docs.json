@@ -2037,6 +2037,694 @@
                 ]
             }
         },
+        "/v1/order": {
+            "get": {
+                "tags": [
+                    "Заказы"
+                ],
+                "summary": "Api: Список заказов",
+                "description": "Список заказов",
+                "operationId": "v1.order.getList",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Поиск по совпадению",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Test"
+                    },
+                    {
+                        "name": "user",
+                        "in": "query",
+                        "description": "Пользователи",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1,2,3"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Статусы заказа",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1,2,3"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Номер страницы",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Записей на страницу",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "example": "10"
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Соротировка по полю",
+                        "required": false,
+                        "allowEmptyValue": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "title",
+                                "status",
+                                "created"
+                            ],
+                            "default": "title"
+                        }
+                    },
+                    {
+                        "name": "reverse",
+                        "in": "query",
+                        "description": "Реверс сортировки",
+                        "required": false,
+                        "allowEmptyValue": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "title": "Список заказов",
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/OrderResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Заказы"
+                ],
+                "summary": "Api: Добавить заказ",
+                "description": "Добавить заказ",
+                "operationId": "v1.order.store",
+                "requestBody": {
+                    "description": "Данные нового заказа",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "article",
+                                    "title",
+                                    "category_id",
+                                    "price"
+                                ],
+                                "properties": {
+                                    "body": {
+                                        "title": "Примечание",
+                                        "type": "string",
+                                        "example": "Test",
+                                        "nullable": "false"
+                                    },
+                                    "status": {
+                                        "title": "Статус",
+                                        "type": "integer",
+                                        "example": "1",
+                                        "nullable": "true"
+                                    },
+                                    "items": {
+                                        "title": "Товары",
+                                        "type": "string",
+                                        "example": "1,2",
+                                        "nullable": "false"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "examples": {
+                                "Active Order": {
+                                    "summary": "Active Order",
+                                    "value": {
+                                        "article": "ABCDEF",
+                                        "title": "Test 1",
+                                        "category_id": 1,
+                                        "price": 490.9,
+                                        "status": 1,
+                                        "images": "1,2"
+                                    }
+                                },
+                                "Blocked Order": {
+                                    "summary": "Blocked Order",
+                                    "value": {
+                                        "article": "DFGERT",
+                                        "title": "Test 2",
+                                        "category_id": 1,
+                                        "price": 590.9,
+                                        "status": 2
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/OrderResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            }
+        },
+        "/v1/order/{id}": {
+            "get": {
+                "tags": [
+                    "Заказы"
+                ],
+                "summary": "Api: Просмотр отдельного заказа",
+                "description": "Просмотр отдельного заказа",
+                "operationId": "v1.order.show",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID заказа",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/OrderResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Заказы"
+                ],
+                "summary": "Api: Обновить заказ",
+                "description": "Обновить заказ",
+                "operationId": "v1.order.update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID заказа",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Обновленные данные заказа",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "article": {
+                                        "title": "Артикул",
+                                        "type": "string",
+                                        "example": "ABCDEF",
+                                        "nullable": "true"
+                                    },
+                                    "title": {
+                                        "title": "Заголовок",
+                                        "type": "string",
+                                        "example": "Test",
+                                        "nullable": "true"
+                                    },
+                                    "category_id": {
+                                        "title": "Категория",
+                                        "type": "integer",
+                                        "example": "1",
+                                        "nullable": "true"
+                                    },
+                                    "price": {
+                                        "title": "Цена",
+                                        "type": "decimal",
+                                        "example": "499.90",
+                                        "nullable": "true"
+                                    },
+                                    "status": {
+                                        "title": "Статус",
+                                        "type": "integer",
+                                        "example": "1",
+                                        "nullable": "true"
+                                    },
+                                    "images": {
+                                        "title": "Изображения",
+                                        "type": "string",
+                                        "example": "1,2",
+                                        "nullable": "true"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/OrderResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Заказы"
+                ],
+                "summary": "Api: Удаление заказа",
+                "description": "Удаление заказа",
+                "operationId": "v1.order.destroy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID заказа",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/MessageResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ErrorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKey": []
+                    }
+                ]
+            }
+        },
         "/v1/review": {
             "get": {
                 "tags": [
@@ -3549,6 +4237,42 @@
                 },
                 "type": "object"
             },
+            "ItemInOrderResource": {
+                "title": "Карточка товара",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "Transform the resource into an array.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "article": {
+                        "title": "Артикул",
+                        "type": "string",
+                        "example": "ABCDEF"
+                    },
+                    "title": {
+                        "title": "Заголовок",
+                        "type": "string",
+                        "example": "Test"
+                    },
+                    "body": {
+                        "title": "Описание",
+                        "type": "string",
+                        "example": "Test description"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/CategoryResource"
+                    },
+                    "price": {
+                        "title": "Цена",
+                        "type": "decimal",
+                        "example": "599.90"
+                    }
+                },
+                "type": "object"
+            },
             "ItemResource": {
                 "title": "Карточка товара",
                 "properties": {
@@ -3638,6 +4362,103 @@
                 },
                 "type": "object"
             },
+            "OrderLogResource": {
+                "title": "Карточка лога заказа",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "Transform the resource into an array.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "status_id": {
+                        "title": "ID статуса",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "status_text": {
+                        "title": "Описание статуса",
+                        "type": "string",
+                        "example": "Test description"
+                    },
+                    "created": {
+                        "title": "Создан",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01 12:00:00"
+                    },
+                    "updated": {
+                        "title": "Обновлен",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01 12:00:00"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderResource": {
+                "title": "Карточка заказа",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "Transform the resource into an array.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserResource"
+                    },
+                    "body": {
+                        "title": "Примечание",
+                        "type": "string",
+                        "example": "Test description"
+                    },
+                    "amount": {
+                        "title": "Сумма заказа",
+                        "type": "decimal",
+                        "example": "1499.90"
+                    },
+                    "volume": {
+                        "title": "Позиций в заказе",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "5"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/OrderLogResource"
+                    },
+                    "created": {
+                        "title": "Создан",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01 12:00:00"
+                    },
+                    "updated": {
+                        "title": "Обновлен",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01 12:00:00"
+                    },
+                    "items": {
+                        "title": "Состав заказа",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ItemResource"
+                        }
+                    },
+                    "log": {
+                        "title": "Лог заказа",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OrderLogResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "ReviewResource": {
                 "title": "Карточка отзыва",
                 "properties": {
@@ -3649,7 +4470,7 @@
                         "example": "1"
                     },
                     "item_id": {
-                        "title": "Товар",
+                        "title": "ID товара",
                         "type": "integer",
                         "format": "int64",
                         "example": "1"

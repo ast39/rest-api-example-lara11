@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\ImageController;
 use App\Http\Controllers\Api\V1\ItemController;
 use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     Route::apiResource('image', ImageController::class)->except(['index', 'update']);
     Route::apiResource('item', ItemController::class);
     Route::apiResource('review', ReviewController::class);
+    Route::apiResource('order', OrderController::class);
 });
 
 

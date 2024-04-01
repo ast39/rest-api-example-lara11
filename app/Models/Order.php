@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use App\Models\Scopes\Filter\Filterable;
+use App\Observers\OrderObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
+#[ObservedBy([OrderObserver::class])]
 class Order extends Model {
 
     use Filterable;
@@ -25,6 +28,20 @@ class Order extends Model {
     public    $timestamps    = true;
 
 
+    public function getVolumeAttribute(): int
+    {
+        return $this->items()->count();
+    }
+
+    public function getAmountAttribute(): float
+    {
+        return array_sum(
+            array_map(function($item) {
+                return $item['pivot']['price'];
+            }, $this->items()->getResults()->toArray())
+        );
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
@@ -33,7 +50,7 @@ class Order extends Model {
     public function items(): BelongsToMany
     {
         return $this->belongsToMany(Item::class, 'order_items')
-            ->withPivotValue(['price']);
+            ->withPivot('price');
     }
 
     public function log(): HasMany
@@ -48,7 +65,8 @@ class Order extends Model {
     ];
 
     protected $appends = [
-        //
+        'volume',
+        'amount',
     ];
 
     protected $casts = [
@@ -57,7 +75,7 @@ class Order extends Model {
     ];
 
     protected $fillable = [
-        'id', 'body', 'user_id', 'price', 'status_id',
+        'id', 'body', 'user_id', 'status_id',
         'created_at', 'updated_at',
     ];
 
