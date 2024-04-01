@@ -13,7 +13,7 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(
  *    type="object",
  *    schema="ItemInOrderResource",
- *    title="Карточка товара",
+ *    title="Карточка товара в заказе",
  *    @OA\Property(title="ID", property="id", type="integer", format="int64", example="1"),
  *    @OA\Property(title="Артикул", property="article", type="string", example="ABCDEF"),
  *    @OA\Property(title="Заголовок", property="title", type="string", example="Test"),

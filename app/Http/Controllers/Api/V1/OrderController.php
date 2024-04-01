@@ -176,8 +176,8 @@ class OrderController extends Controller {
      *      required=true,
      *      description="Данные нового заказа",
      *      @OA\JsonContent(
-     *        required={"article", "title", "category_id", "price"},
-     *        @OA\Property(property="body", title="Примечание", nullable="false", example="Test", type="string"),
+     *        required={"items"},
+     *        @OA\Property(property="body", title="Примечание", nullable="true", example="Test", type="string"),
      *        @OA\Property(property="status", title="Статус", nullable="true", example="1", type="integer"),
      *        @OA\Property(property="items", title="Товары", nullable="false", example="1,2", type="string"),
      *        examples={
@@ -251,12 +251,9 @@ class OrderController extends Controller {
      *       required=true,
      *       description="Обновленные данные заказа",
      *       @OA\JsonContent(
-     *         @OA\Property(property="article", title="Артикул", nullable="true", example="ABCDEF", type="string"),
-     *         @OA\Property(property="title", title="Заголовок", nullable="true", example="Test", type="string"),
-     *         @OA\Property(property="category_id", title="Категория", nullable="true", example="1", type="integer"),
-     *         @OA\Property(property="price", title="Цена", nullable="true", example="499.90", type="decimal"),
+     *         @OA\Property(property="body", title="Примечание", nullable="true", example="Test", type="string"),
      *         @OA\Property(property="status", title="Статус", nullable="true", example="1", type="integer"),
-     *         @OA\Property(property="images", title="Изображения", nullable="true", example="1,2", type="string")
+     *         @OA\Property(property="items", title="Товары", nullable="false", example="1,2", type="string"),
      *       ),
      *     ),
      *     @OA\Response(response=200, description="successful operation",

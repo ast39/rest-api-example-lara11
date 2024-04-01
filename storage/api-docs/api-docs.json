@@ -2231,17 +2231,14 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "article",
-                                    "title",
-                                    "category_id",
-                                    "price"
+                                    "items"
                                 ],
                                 "properties": {
                                     "body": {
                                         "title": "Примечание",
                                         "type": "string",
                                         "example": "Test",
-                                        "nullable": "false"
+                                        "nullable": "true"
                                     },
                                     "status": {
                                         "title": "Статус",
@@ -2497,28 +2494,10 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "article": {
-                                        "title": "Артикул",
-                                        "type": "string",
-                                        "example": "ABCDEF",
-                                        "nullable": "true"
-                                    },
-                                    "title": {
-                                        "title": "Заголовок",
+                                    "body": {
+                                        "title": "Примечание",
                                         "type": "string",
                                         "example": "Test",
-                                        "nullable": "true"
-                                    },
-                                    "category_id": {
-                                        "title": "Категория",
-                                        "type": "integer",
-                                        "example": "1",
-                                        "nullable": "true"
-                                    },
-                                    "price": {
-                                        "title": "Цена",
-                                        "type": "decimal",
-                                        "example": "499.90",
                                         "nullable": "true"
                                     },
                                     "status": {
@@ -2527,11 +2506,11 @@
                                         "example": "1",
                                         "nullable": "true"
                                     },
-                                    "images": {
-                                        "title": "Изображения",
+                                    "items": {
+                                        "title": "Товары",
                                         "type": "string",
                                         "example": "1,2",
-                                        "nullable": "true"
+                                        "nullable": "false"
                                     }
                                 },
                                 "type": "object"
@@ -4238,7 +4217,7 @@
                 "type": "object"
             },
             "ItemInOrderResource": {
-                "title": "Карточка товара",
+                "title": "Карточка товара в заказе",
                 "properties": {
                     "id": {
                         "title": "ID",
