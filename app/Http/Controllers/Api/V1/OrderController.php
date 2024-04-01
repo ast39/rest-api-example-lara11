@@ -14,6 +14,7 @@ use App\Http\Resources\Api\MessageResource;
 use App\Http\Services\OrderService;
 use App\Http\Traits\Accessable;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
@@ -178,7 +179,6 @@ class OrderController extends Controller {
      *      @OA\JsonContent(
      *        required={"items"},
      *        @OA\Property(property="body", title="Примечание", nullable="true", example="Test", type="string"),
-     *        @OA\Property(property="status", title="Статус", nullable="true", example="1", type="integer"),
      *        @OA\Property(property="items", title="Товары", nullable="false", example="1,2", type="string"),
      *        examples={
      *          @OA\Examples(example="Active Order", summary="Active Order", value={"article":"ABCDEF", "title":"Test 1",
@@ -218,14 +218,15 @@ class OrderController extends Controller {
             }
 
             $data = $request->validated();
+            $data['user_id'] = Auth::id();
 
             DB::beginTransaction();
 
-            $Order = $this->orderService->store($data);
+            $order = $this->orderService->store($data);
 
             DB::commit();
 
-            return OrderResource::make($Order)->response()->setStatusCode(201);
+            return OrderResource::make($order)->response()->setStatusCode(201);
         } catch(\Exception $e) {
 
             DB::rollBack();
@@ -351,7 +352,7 @@ class OrderController extends Controller {
             DB::commit();
 
             return MessageResource::make(true)
-                ->additional(['data' => ['msg' => __('msg.Order.deleted')]])
+                ->additional(['data' => ['msg' => __('msg.order.deleted')]])
                 ->response()
                 ->setStatusCode(200);
         } catch(\Exception $e) {

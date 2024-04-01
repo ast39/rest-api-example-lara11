@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Enums\EOrderReverse;
+use App\Exceptions\NotAuthorizedException;
 use App\Exceptions\ReviewNotFoundException;
 use App\Models\Review;
 use App\Models\Scopes\ReviewScope;
@@ -68,7 +69,7 @@ class ReviewService {
      * @param int $id
      * @param array $data
      * @return Review
-     * @throws ReviewNotFoundException
+     * @throws ReviewNotFoundException|NotAuthorizedException
      */
     public function update(int $id, array $data): Review
     {
@@ -76,6 +77,10 @@ class ReviewService {
 
         if (!$review) {
             throw new ReviewNotFoundException();
+        }
+
+        if (request()->user()->cannot('update', $review)) {
+            throw new NotAuthorizedException();
         }
 
         $review->update($data);
@@ -88,7 +93,7 @@ class ReviewService {
     /**
      * @param int $id
      * @return void
-     * @throws ReviewNotFoundException
+     * @throws ReviewNotFoundException|NotAuthorizedException
      */
     public function destroy(int $id): void
     {
@@ -96,6 +101,10 @@ class ReviewService {
 
         if (!$review) {
             throw new ReviewNotFoundException();
+        }
+
+        if (request()->user()->cannot('delete', $review)) {
+            throw new NotAuthorizedException();
         }
 
         $review->delete();

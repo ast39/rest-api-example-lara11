@@ -11,8 +11,8 @@ class OrderUpdateRequest extends FormRequest {
 
     public function prepareForValidation(): void
     {
-        if (!is_null($this->images)) {
-            $this->merge(['images' => explode(',', $this->images)]);
+        if (!is_null($this->items)) {
+            $this->merge(['items' => explode(',', $this->items)]);
         }
     }
 
