@@ -6,12 +6,26 @@ use App\Enums\EOrderReverse;
 use App\Exceptions\UserNotFoundException;
 use App\Models\Scopes\UserScope;
 use App\Models\User;
+use App\Repositories\User\UserCommandRepository;
+use App\Repositories\User\UserRequestRepository;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 
 class UserService {
+
+    protected UserRequestRepository $repoRequest;
+    protected UserCommandRepository $repoCommand;
+
+
+    public function __construct(
+        UserRequestRepository $repoRequest,
+        UserCommandRepository $repoCommand
+    ) {
+        $this->repoRequest = $repoRequest;
+        $this->repoCommand = $repoCommand;
+    }
 
     /**
      * @param array $data
@@ -27,12 +41,7 @@ class UserService {
             'queryParams' => array_filter($data)
         ]);
 
-        $users = User::query()->filter($filter)
-            ->orderBy($order, $reverse);
-
-        return is_null($data['limit'] ?? null)
-            ? $users->get()
-            : $users->paginate($data['limit']);
+        return $this->repoRequest->findList($filter, $order, $reverse, $data['limit'] ?? null);
     }
 
     /**
@@ -42,7 +51,7 @@ class UserService {
      */
     public function getByEmail(string $email): User
     {
-        $user = User::where('email', $email)->first();
+        $user = $this->repoRequest->findByFields('email', $email);
 
         if (!$user) {
             throw new UserNotFoundException();
@@ -58,7 +67,7 @@ class UserService {
      */
     public function show(int $id): User
     {
-        $user = User::find($id);
+        $user = $this->repoRequest->getById($id);
 
         if (!$user) {
             throw new UserNotFoundException();
@@ -75,7 +84,7 @@ class UserService {
     {
         $data['password'] = bcrypt($data['password']);
 
-        return User::create($data);
+        return $this->repoCommand->store($data);
     }
 
     /**
@@ -86,15 +95,15 @@ class UserService {
      */
     public function update(int $id, array $data): User
     {
-        $user = User::findOrFail($id);
+        $user = $this->repoRequest->getById($id);
 
         if (!$user) {
             throw new UserNotFoundException();
         }
 
-        $user->update($data);
+        $this->repoCommand->update($user, $data);
 
-        return $user;
+        return $this->repoRequest->getById($id);
     }
 
     /**
@@ -104,12 +113,12 @@ class UserService {
      */
     public function destroy(int $id): void
     {
-        $user = User::find($id);
+        $user = $this->repoRequest->getById($id);
 
         if (!$user) {
             throw new UserNotFoundException();
         }
 
-        $user->delete();
+        $this->repoCommand->destroy($user);
     }
 }
