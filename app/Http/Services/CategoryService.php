@@ -2,97 +2,68 @@
 
 namespace App\Http\Services;
 
-use App\Enums\EOrderReverse;
-use App\Exceptions\CategoryNotFoundException;
+use App\Dto\Category\CategoryCreateDto;
+use App\Dto\Category\CategoryFilterDto;
+use App\Dto\Category\CategoryUpdateDto;
 use App\Models\Category;
-use App\Models\Scopes\CategoryScope;
-use Illuminate\Contracts\Container\BindingResolutionException;
+use App\Repositories\Category\CategoryRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 
 class CategoryService {
 
-    /**
-     * @param array $data
-     * @return Collection|LengthAwarePaginator
-     * @throws BindingResolutionException
-     */
-    public function index(array $data): Collection|LengthAwarePaginator
+    protected CategoryRepositoryInterface $categoryRepository;
+
+    public function __construct(CategoryRepositoryInterface $categoryRepository)
     {
-        $order = $data['order'] ?? 'title';
-        $reverse = $data['reverse'] ?? EOrderReverse::ASC->value;
+        $this->categoryRepository = $categoryRepository;
+    }
 
-        $filter = app()->make(CategoryScope::class, [
-            'queryParams' => array_filter($data)
-        ]);
-
-        $categories = Category::query()->filter($filter)
-            ->orderBy($order, $reverse);
-
-        return is_null($data['limit'] ?? null)
-            ? $categories->get()
-            : $categories->paginate($data['limit']);
+    /**
+     * @param CategoryFilterDto $categoryDto
+     * @return Collection|LengthAwarePaginator
+     */
+    public function index(CategoryFilterDto $categoryDto): Collection|LengthAwarePaginator
+    {
+       return $this->categoryRepository->getAll($categoryDto);
     }
 
     /**
      * @param int $id
      * @return Category
-     * @throws CategoryNotFoundException
      */
     public function show(int $id): Category
     {
-        $category = Category::find($id);
-
-        if (!$category) {
-            throw new CategoryNotFoundException();
-        }
-
-        return $category;
+        return $this->categoryRepository->findById($id);
     }
 
     /**
-     * @param array $data
+     * @param CategoryCreateDto $categoryDto
      * @return Category
      */
-    public function store(array $data): Category
+    public function store(CategoryCreateDto $categoryDto): Category
     {
-        return Category::create($data);
+        return $this->categoryRepository->create($categoryDto);
     }
 
     /**
      * @param int $id
-     * @param array $data
+     * @param CategoryUpdateDto $categoryDto
      * @return Category
-     * @throws CategoryNotFoundException
      */
-    public function update(int $id, array $data): Category
+    public function update(int $id, CategoryUpdateDto $categoryDto): Category
     {
-        $category = Category::find($id);
-
-        if (!$category) {
-            throw new CategoryNotFoundException();
-        }
-
-        $category->update($data);
-
-        return $category;
+        return $this->categoryRepository->update($id, $categoryDto);
     }
 
     /**
      * @param int $id
      * @return void
-     * @throws CategoryNotFoundException
      */
     public function destroy(int $id): void
     {
-        $category = Category::find($id);
-
-        if (!$category) {
-            throw new CategoryNotFoundException();
-        }
-
-        $category->delete();
+        $this->categoryRepository->delete($id);
     }
 
 }

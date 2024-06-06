@@ -1,7 +1,10 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Item;
 
+use App\Dto\Item\ItemCreateDto;
+use App\Dto\Item\ItemFilterDto;
+use App\Dto\Item\ItemUpdateDto;
 use App\Enums\EOrderReverse;
 use App\Exceptions\ItemNotFoundException;
 use App\Models\Item;
@@ -16,21 +19,21 @@ class ItemRepository implements ItemRepositoryInterface {
         $this->model = $model;
     }
 
-    public function getAll(array $attributes)
+    public function getAll(ItemFilterDto $itemDto)
     {
         $order = $data['order'] ?? 'title';
         $reverse = $data['reverse'] ?? EOrderReverse::ASC->value;
 
         $filter = app()->make(ItemScope::class, [
-            'queryParams' => array_filter($attributes)
+            'queryParams' => array_filter($itemDto->toArray())
         ]);
 
         $items = $this->model::query()->filter($filter)
             ->orderBy($order, $reverse);
 
-        return is_null($attributes['limit'] ?? null)
+        return is_null($itemDto->limit ?? null)
             ? $items->get()
-            : $items->paginate($attributes['limit']);
+            : $items->paginate($itemDto->limit);
     }
 
     /**
@@ -54,14 +57,14 @@ class ItemRepository implements ItemRepositoryInterface {
     /**
      * Добавить товар
      *
-     * @param array $attributes
+     * @param ItemCreateDto $itemDto
      * @return Item
      */
-    public function create(array $attributes): Item
+    public function create(ItemCreateDto $itemDto): Item
     {
-        $item = $this->model::create($attributes);
+        $item = $this->model::create(collect($itemDto)->toArray());
 
-        $item->images()->attach(collect($attributes)->get('images'));
+        $item->images()->attach(collect($itemDto)->get('images'));
 
         return $item;
     }
@@ -70,11 +73,11 @@ class ItemRepository implements ItemRepositoryInterface {
      * Обновить товар
      *
      * @param int $id
-     * @param array $attributes
+     * @param ItemUpdateDto $itemDto
      * @return Item
      * @throws ItemNotFoundException
      */
-    public function update(int $id, array $attributes): Item
+    public function update(int $id, ItemUpdateDto $itemDto): Item
     {
         $item = $this->model::find($id);
 
@@ -82,9 +85,9 @@ class ItemRepository implements ItemRepositoryInterface {
             throw new ItemNotFoundException();
         }
 
-        $item->update($attributes);
+        $item->update($itemDto->toArray());
 
-        $item->images()->sync(collect($attributes)->get('images'));
+        $item->images()->sync(collect($itemDto)->get('images'));
 
         return $item;
     }

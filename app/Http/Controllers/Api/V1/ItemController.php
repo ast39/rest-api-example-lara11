@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Dto\Item\ItemCreateDto;
+use App\Dto\Item\ItemFilterDto;
+use App\Dto\Item\ItemUpdateDto;
 use App\Dto\ServerErrorDto;
 use App\Exceptions\NotAuthorizedException;
 use App\Http\Controllers\Controller;
@@ -88,7 +91,7 @@ class ItemController extends Controller {
 
             DB::beginTransaction();
 
-            $list = $this->itemService->index($data);
+            $list = $this->itemService->index(new ItemFilterDto($data));
 
             DB::commit();
 
@@ -229,7 +232,7 @@ class ItemController extends Controller {
 
             DB::beginTransaction();
 
-            $item = $this->itemService->store($data);
+            $item = $this->itemService->store(new ItemCreateDto($data));
 
             DB::commit();
 
@@ -300,7 +303,7 @@ class ItemController extends Controller {
 
             DB::beginTransaction();
 
-            $item = $this->itemService->update($id, $data);
+            $item = $this->itemService->update($id, new ItemUpdateDto($data));
 
             return ItemResource::make($item)->response();
         } catch(\Exception $e) {

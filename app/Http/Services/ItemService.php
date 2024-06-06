@@ -2,9 +2,11 @@
 
 namespace App\Http\Services;
 
-use App\Dto\ItemDto;
+use App\Dto\Item\ItemCreateDto;
+use App\Dto\Item\ItemFilterDto;
+use App\Dto\Item\ItemUpdateDto;
 use App\Models\Item;
-use App\Repositories\ItemRepositoryInterface;
+use App\Repositories\Item\ItemRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -19,12 +21,12 @@ class ItemService {
     }
 
     /**
-     * @param array $data
+     * @param ItemFilterDto $itemDto
      * @return Collection|LengthAwarePaginator
      */
-    public function index(array $data): Collection|LengthAwarePaginator
+    public function index(ItemFilterDto $itemDto): Collection|LengthAwarePaginator
     {
-        return $this->itemRepository->getAll($data);
+        return $this->itemRepository->getAll($itemDto);
     }
 
     /**
@@ -37,22 +39,22 @@ class ItemService {
     }
 
     /**
-     * @param array $data
+     * @param ItemCreateDto $itemDto
      * @return Item
      */
-    public function store(array $data): Item
+    public function store(ItemCreateDto $itemDto): Item
     {
-        return $this->itemRepository->create((array) $data);
+        return $this->itemRepository->create($itemDto);
     }
 
     /**
      * @param int $id
-     * @param array $data
+     * @param ItemUpdateDto $itemDto
      * @return Item
      */
-    public function update(int $id, array $data): Item
+    public function update(int $id, ItemUpdateDto $itemDto): Item
     {
-        return $this->itemRepository->update($id, (array) $data);
+        return $this->itemRepository->update($id, $itemDto);
     }
 
     /**

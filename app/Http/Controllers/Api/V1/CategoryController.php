@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Dto\Category\CategoryCreateDto;
+use App\Dto\Category\CategoryFilterDto;
 use App\Dto\ServerErrorDto;
-use App\Enums\EUserRole;
-use App\Exceptions\CategoryNotFoundException;
 use App\Exceptions\NotAuthorizedException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Category\CategoryQueryRequest;
@@ -16,7 +16,6 @@ use App\Http\Resources\Api\MessageResource;
 use App\Http\Services\CategoryService;
 use App\Http\Traits\Accessable;
 use App\Models\User;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -90,7 +89,7 @@ class CategoryController extends Controller {
 
             DB::beginTransaction();
 
-            $list = $this->categoryService->index($data);
+            $list = $this->categoryService->index(new CategoryFilterDto($data));
 
             DB::commit();
 
@@ -222,10 +221,11 @@ class CategoryController extends Controller {
             }
 
             $data = $request->validated();
+            $categoryDto = new CategoryCreateDto($data);
 
             DB::beginTransaction();
 
-            $item = $this->categoryService->store($data);
+            $item = $this->categoryService->store($categoryDto);
 
             DB::commit();
 

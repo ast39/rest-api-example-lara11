@@ -2,12 +2,11 @@
 
 namespace App\Providers;
 
-use App\Events\UserCreated;
-use App\Listeners\SendLetterAboutNewUser;
 use App\Models\User;
-use App\Repositories\ItemRepository;
-use App\Repositories\ItemRepositoryInterface;
-use Illuminate\Support\Facades\Event;
+use App\Repositories\Category\CategoryRepository;
+use App\Repositories\Category\CategoryRepositoryInterface;
+use App\Repositories\Item\ItemRepository;
+use App\Repositories\Item\ItemRepositoryInterface;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -19,6 +18,7 @@ class AppServiceProvider extends ServiceProvider {
      */
     public function register(): void
     {
+        $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
         $this->app->bind(ItemRepositoryInterface::class, ItemRepository::class);
     }
 
